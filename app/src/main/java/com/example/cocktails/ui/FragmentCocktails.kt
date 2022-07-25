@@ -36,6 +36,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     var c: Char = 'a'
     private lateinit var searchingText: String
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,9 +54,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null) {
-            searchingText = savedInstanceState.getString(FAST_SEARCH_KEY).toString()
-        }
+        searchingText = savedInstanceState?.getString(FAST_SEARCH_KEY).toString()
     }
 
     override fun onStart() {
@@ -69,6 +68,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
         if (savedInstanceState != null) {
             c = savedInstanceState.getChar(ALPHABETICAL)
         }
+
         initRecyclerView()
         binding?.recycler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -81,11 +81,13 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
                 }
             }
         })
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu, menu)
                 val searchItem: MenuItem = menu.findItem(R.id.action_search)
                 val searchView: SearchView = searchItem.actionView as SearchView
+                if (savedInstanceState == null) searchingText = ""
                 searchView.setOnQueryTextListener(object : OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String): Boolean {
                         return false
@@ -97,12 +99,15 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
                         return false
                     }
                 })
+                searchView.requestFocus()
+                searchView.setQuery(searchingText, false)
+                filter(searchingText)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return false
             }
-        })
+        }, viewLifecycleOwner)
     }
 
     private fun initRecyclerView() = with(binding)
@@ -130,7 +135,9 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
         if (filteredlist.isEmpty()) {
             Log.d("NoData", "No Data Found")
         } else {
-            adapter.submitList(filteredlist)
+            val set = filteredlist.toSet()
+            val newList = set.toList()
+            adapter.submitList(newList)
         }
     }
 
