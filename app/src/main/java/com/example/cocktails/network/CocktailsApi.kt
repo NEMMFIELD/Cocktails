@@ -7,8 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface CocktailsApi {
-    @GET("1/random.php")
-    suspend fun getRandomCocktail(): Response
 
     @GET("1/search.php?")
     suspend fun getCocktailsByFirstLetter(@Query("f") f:String):Response

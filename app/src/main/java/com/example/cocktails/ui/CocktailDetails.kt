@@ -13,8 +13,6 @@ import com.example.cocktails.viewmodel.CocktailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
-//private const val KEY = "key"
-//private const val ID = "id"
 @AndroidEntryPoint
 class CocktailDetails : Fragment() {
     // TODO: Rename and change types of parameters

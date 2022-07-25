@@ -1,6 +1,7 @@
 package com.example.cocktails.ui
 
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -22,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 const val KEY = "key"
 const val ID = "id"
+const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
 class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
@@ -31,6 +33,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
     var c: Char = 'a'
+    private lateinit var searchingText:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +47,12 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putChar("Alphabet", c)
+        outState.putString(FAST_SEARCH_KEY,searchingText)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        searchingText = savedInstanceState?.getString(FAST_SEARCH_KEY).toString()
     }
 
     override fun onStart() {
@@ -80,7 +89,8 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
                     }
 
                     override fun onQueryTextChange(newText: String): Boolean {
-                        filter(newText)
+                        searchingText = newText
+                        filter(searchingText)
                         return false
                     }
                 })
@@ -94,7 +104,9 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     private fun initRecyclerView() = with(binding)
     {
-        this?.recycler?.layoutManager = GridLayoutManager(context, 2)
+        val spanCount = if (activity?.resources?.configuration?.orientation !=
+                Configuration.ORIENTATION_PORTRAIT) 3 else 2
+        this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@FragmentCocktails)
         this?.recycler?.adapter = adapter
         viewModel.cocktails.observe(viewLifecycleOwner, Observer {
@@ -117,7 +129,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
             adapter.submitList(filteredlist)
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
