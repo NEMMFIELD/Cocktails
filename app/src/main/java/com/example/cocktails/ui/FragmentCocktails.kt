@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 const val KEY = "key"
 const val ID = "id"
+const val ALPHABETICAL = "currentChar"
 const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
@@ -33,7 +34,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
     var c: Char = 'a'
-    private lateinit var searchingText:String
+    private lateinit var searchingText: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,13 +47,15 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putChar("Alphabet", c)
-        outState.putString(FAST_SEARCH_KEY,searchingText)
+        outState.putChar(ALPHABETICAL, c)
+        outState.putString(FAST_SEARCH_KEY, searchingText)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        searchingText = savedInstanceState?.getString(FAST_SEARCH_KEY).toString()
+        if (savedInstanceState != null) {
+            searchingText = savedInstanceState.getString(FAST_SEARCH_KEY).toString()
+        }
     }
 
     override fun onStart() {
@@ -64,7 +67,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            c = savedInstanceState.getChar("Alphabet")
+            c = savedInstanceState.getChar(ALPHABETICAL)
         }
         initRecyclerView()
         binding?.recycler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -105,7 +108,8 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private fun initRecyclerView() = with(binding)
     {
         val spanCount = if (activity?.resources?.configuration?.orientation !=
-                Configuration.ORIENTATION_PORTRAIT) 3 else 2
+            Configuration.ORIENTATION_PORTRAIT
+        ) 3 else 2
         this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@FragmentCocktails)
         this?.recycler?.adapter = adapter
