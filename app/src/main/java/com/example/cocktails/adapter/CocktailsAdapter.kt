@@ -12,9 +12,8 @@ import com.example.cocktails.R
 import com.example.cocktails.databinding.ItemViewBinding
 import com.example.cocktails.model.CocktailModel
 
-class CocktailsAdapter(val listener: clickListener) :
+class CocktailsAdapter(private val listener: clickListener) :
     ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
-    private var list: ArrayList<CocktailModel> = ArrayList()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)

@@ -11,6 +11,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,10 @@ import com.example.cocktails.databinding.FragmentCocktailsBinding
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.viewmodel.CocktailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val KEY = "key"
 const val ID = "id"
@@ -35,8 +40,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private val list: MutableList<CocktailModel> = ArrayList()
     var c: Char = 'a'
     private lateinit var searchingText: String
-
-
+    private var queryTextChangedJob: Job? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,8 +98,13 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
                     }
 
                     override fun onQueryTextChange(newText: String): Boolean {
-                        searchingText = newText
-                        filter(searchingText)
+                        queryTextChangedJob?.cancel()
+                        queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
+                        {
+                            delay(500)
+                            searchingText = newText
+                            filter(searchingText)
+                        }
                         return false
                     }
                 })
@@ -110,7 +119,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
         }, viewLifecycleOwner)
     }
 
-    private fun initRecyclerView() = with(binding)
+    private fun initRecyclerView() = with (binding)
     {
         val spanCount = if (activity?.resources?.configuration?.orientation !=
             Configuration.ORIENTATION_PORTRAIT
