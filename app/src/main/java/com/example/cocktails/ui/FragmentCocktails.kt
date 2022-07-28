@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 
 const val KEY = "key"
 const val ID = "id"
-const val ALPHABETICAL = "currentChar"
 const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
@@ -51,7 +50,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-       // outState.putChar(ALPHABETICAL, currentChar)
         outState.putString(FAST_SEARCH_KEY, searchingText)
     }
 
@@ -67,9 +65,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
-           //currentChar = savedInstanceState.getChar(ALPHABETICAL)
-        }
 
         initRecyclerView()
         binding?.recycler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
