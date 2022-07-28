@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CocktailDetails : Fragment() {
-    // TODO: Rename and change types of parameters
     private var id: String? = null
     private var count: Int? = null
     private var _binding: FragmentCocktailDetailsBinding? = null
@@ -34,8 +33,7 @@ class CocktailDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCocktailDetailsBinding.inflate(inflater, container, false)
-        val view = binding?.root
-        return view
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

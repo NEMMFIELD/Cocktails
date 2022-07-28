@@ -38,7 +38,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private lateinit var adapter: CocktailsAdapter
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
-    var c: Char = 'a'
+
     private lateinit var searchingText: String
     private var queryTextChangedJob: Job? = null
     override fun onCreateView(
@@ -46,13 +46,12 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCocktailsBinding.inflate(inflater, container, false)
-        val view = binding?.root
-        return view
+        return binding?.root
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putChar(ALPHABETICAL, c)
+       // outState.putChar(ALPHABETICAL, currentChar)
         outState.putString(FAST_SEARCH_KEY, searchingText)
     }
 
@@ -63,14 +62,13 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     override fun onStart() {
         super.onStart()
-        viewModel.loadFirst(c)
-        c++
+        viewModel.loadCocktails()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            c = savedInstanceState.getChar(ALPHABETICAL)
+           //currentChar = savedInstanceState.getChar(ALPHABETICAL)
         }
 
         initRecyclerView()
@@ -79,8 +77,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
                 super.onScrollStateChanged(recyclerView, newState)
                 when {
                     (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_DRAGGING) -> {
-                        viewModel.loadFirst(c)
-                        c++
+                        viewModel.loadCocktails()
                     }
                 }
             }
@@ -119,7 +116,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
         }, viewLifecycleOwner)
     }
 
-    private fun initRecyclerView() = with (binding)
+    private fun initRecyclerView() = with(binding)
     {
         val spanCount = if (activity?.resources?.configuration?.orientation !=
             Configuration.ORIENTATION_PORTRAIT
@@ -135,7 +132,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
 
     private fun filter(text: String) {
         val filteredlist: ArrayList<CocktailModel> = ArrayList()
-        // running a for loop to compare elements.
         for (item in list) {
             if (item.name!!.lowercase().contains(text.lowercase())) {
                 filteredlist.add(item)

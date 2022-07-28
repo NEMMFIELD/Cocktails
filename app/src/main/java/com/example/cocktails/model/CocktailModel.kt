@@ -9,5 +9,5 @@ data class CocktailModel(
     val id: String?,
     val name: String?,
     val imgPath: String?,
-    val recipe:String?
-):Parcelable
+    val recipe: String?
+) : Parcelable

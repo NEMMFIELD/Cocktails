@@ -6,31 +6,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cocktails.model.CocktailModel
-import com.example.cocktails.network.Repository
+import com.example.cocktails.network.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.Error
 import javax.inject.Inject
 
 @HiltViewModel
-class CocktailsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
     private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
+    private var numbChar:Char = 'a'
 
     private val _mutableCocktail = MutableLiveData<CocktailModel>()
     val cocktail: LiveData<CocktailModel>
         get() = _mutableCocktail
 
-
-    fun loadFirst(param: Char) {
+    fun loadCocktails() {
         viewModelScope.launch {
             try {
-                val newCocktails = repository.loadCocktails(param.toString())
+                val newCocktails = repository.loadCocktails(numbChar.toString())
                 val updatedCocktailsList = _mutableCocktails.value?.plus(newCocktails).orEmpty()
                 _mutableCocktails.value = updatedCocktailsList
+                numbChar++
             }
             catch (e: Exception) {
+                Log.d("Error",e.toString())
             }
         }
     }
