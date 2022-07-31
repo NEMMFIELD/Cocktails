@@ -28,7 +28,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 val newCocktails = repository.loadCocktails(numbChar.toString())
                 val updatedCocktailsList = _mutableCocktails.value?.plus(newCocktails).orEmpty()
                 _mutableCocktails.value = updatedCocktailsList
-                if (numbChar.isLetter()) numbChar++
+                if (numbChar in 'a'..'z') numbChar++ else return@launch
             } catch (e: Exception) {
                 Log.d("Error", e.toString())
             }
