@@ -16,7 +16,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
     private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
-    private var numbChar:Char = 'a'
+    private var numbChar: Char = 'a'
 
     private val _mutableCocktail = MutableLiveData<CocktailModel>()
     val cocktail: LiveData<CocktailModel>
@@ -28,10 +28,9 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 val newCocktails = repository.loadCocktails(numbChar.toString())
                 val updatedCocktailsList = _mutableCocktails.value?.plus(newCocktails).orEmpty()
                 _mutableCocktails.value = updatedCocktailsList
-                numbChar++
-            }
-            catch (e: Exception) {
-                Log.d("Error",e.toString())
+                if (numbChar.isLetter()) numbChar++
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
             }
         }
     }

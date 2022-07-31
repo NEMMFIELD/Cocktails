@@ -1,8 +1,7 @@
 package com.example.cocktails
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.example.cocktails.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint

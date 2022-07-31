@@ -1,55 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#380106"
-    android:padding="15dp"
     android:layout_margin="5dp"
+    android:background="#380106"
     tools:context=".ui.CocktailDetails">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt; Back"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"/>
     <TextView
-        android:id="@+id/nameCocktailDetails"
-        android:layout_width="match_parent"
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="17sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="&lt; Back"
         android:textColor="#FFFFFF"
-        android:paddingEnd="40dp"
-        tools:text ="Tratata"
-        />
-    </LinearLayout>
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/imageCocktailDetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:scaleType="centerCrop"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
         android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/btnBack"
+        app:layout_constraintTop_toBottomOf="@+id/btnBack"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/instructionCocktailDetails"
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="16sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-         />
-</LinearLayout>
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@+id/imageCocktailDetails"
+        app:layout_constraintTop_toBottomOf="@+id/nameCocktailDetails"
+        tools:text="Tratata2" />
+
+    <TextView
+        android:id="@+id/nameCocktailDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="-10dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageCocktailDetails"
+        app:layout_constraintTop_toTopOf="@+id/imageCocktailDetails"
+        tools:text="Tratata" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

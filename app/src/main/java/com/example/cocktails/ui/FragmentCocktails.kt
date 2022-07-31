@@ -38,7 +38,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
 
-    private lateinit var searchingText: String
+    private var searchingText: String = ""
     private var queryTextChangedJob: Job? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
