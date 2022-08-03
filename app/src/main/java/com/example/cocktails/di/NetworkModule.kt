@@ -1,5 +1,6 @@
 package com.example.cocktails.di
 
+import android.content.Context
 import com.example.cocktails.network.CocktailsApi
 import com.example.cocktails.network.RepositoryImpl
 import com.example.cocktails.network.repository
@@ -8,6 +9,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -34,6 +36,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRepository(cocktailsApi: CocktailsApi): repository = RepositoryImpl(cocktailsApi)
+    fun provideRepository(cocktailsApi: CocktailsApi,@ApplicationContext context:  Context): repository = RepositoryImpl(cocktailsApi,context)
 
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.model.DrinksItem
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -13,7 +14,8 @@ interface repository {
     suspend fun loadCocktailDetails(id: String?): CocktailModel
 }
 
-class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi) : repository {
+class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi, @ApplicationContext context: Context) : repository {
+    private val sharedPreferences = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE)
     override suspend fun loadCocktails(param: String): List<CocktailModel> {
         val list = cocktailsApi.getCocktailsByFirstLetter(param).drinks
         val myList = ArrayList<CocktailModel>()
@@ -41,6 +43,6 @@ class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi)
             name = response?.strDrink,
             imgPath = response?.strDrinkThumb.toString(),
             recipe = response?.strInstructions.toString(),
-            isLiked = false
+            isLiked = sharedPreferences.getBoolean("Liked",false)
         )
 }

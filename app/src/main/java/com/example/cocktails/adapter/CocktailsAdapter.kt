@@ -1,6 +1,7 @@
 package com.example.cocktails.adapter
 
 import android.content.Context
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,6 @@ class CocktailsAdapter @Inject constructor(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
-        private val prefs = view.context.getSharedPreferences("Prefs",Context.MODE_PRIVATE)
         fun bind(item: CocktailModel, listener: clickListener, onLikeListener: likeListener) =
             with(binding)
             {
@@ -32,7 +32,6 @@ class CocktailsAdapter @Inject constructor(
                     transformations(RoundedCornersTransformation())
                 }
                 textCocktail.text = item.name
-              //  item.isLiked = prefs.getBoolean("Liked",false)
                 if (item.isLiked) likeImage.setImageResource(R.drawable.liked)
                 else likeImage.setImageResource(R.drawable.unliked)
 
