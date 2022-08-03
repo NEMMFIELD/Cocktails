@@ -1,5 +1,7 @@
 package com.example.cocktails.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.network.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +22,6 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
     private var numbChar: Char = 'a'
-
     private val _mutableCocktail = MutableLiveData<CocktailModel>()
     val cocktail: LiveData<CocktailModel>
         get() = _mutableCocktail
@@ -28,7 +32,10 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 val newCocktails = repository.loadCocktails(numbChar.toString())
                 val updatedCocktailsList = _mutableCocktails.value?.plus(newCocktails).orEmpty()
                 _mutableCocktails.value = updatedCocktailsList
-                if (numbChar in 'a'..'z') numbChar++ else return@launch
+                if (numbChar in 'a'..'z') {
+                    numbChar++
+                    delay(500)
+                } else return@launch
             } catch (e: Exception) {
                 Log.d("Error", e.toString())
             }

@@ -6,6 +6,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
     <ImageView
         android:id="@+id/imageCocktail"
         android:layout_width="wrap_content"
@@ -13,6 +16,14 @@
         android:layout_gravity="center"
        android:scaleType="centerCrop"
         />
+        <ImageView
+            android:id="@+id/likeImage"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="end"
+            android:src="@drawable/unliked"/>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/textCocktail"
         android:textColor="#FFFFFF"
@@ -23,5 +34,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/textview" />
-
 </LinearLayout>

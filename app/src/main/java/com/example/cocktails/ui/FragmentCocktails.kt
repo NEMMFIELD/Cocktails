@@ -1,10 +1,12 @@
 package com.example.cocktails.ui
 
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuProvider
@@ -25,19 +27,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 
 const val KEY = "key"
 const val ID = "id"
 const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
-class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
+class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener, CocktailsAdapter.likeListener {
     private var _binding: FragmentCocktailsBinding? = null
     private val binding get() = _binding
     private lateinit var adapter: CocktailsAdapter
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
-
+    private val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
     private var searchingText: String = ""
     private var queryTextChangedJob: Job? = null
     override fun onCreateView(
@@ -117,7 +120,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
             Configuration.ORIENTATION_PORTRAIT
         ) 3 else 2
         this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
-        adapter = CocktailsAdapter(this@FragmentCocktails)
+        adapter = CocktailsAdapter(this@FragmentCocktails, this@FragmentCocktails)
         this?.recycler?.adapter = adapter
         viewModel.cocktails.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
@@ -154,6 +157,17 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener {
             com.example.cocktails.R.id.action_fragmentCocktails_to_cocktailDetails,
             args
         )
+        adapter.notifyItemChanged(position)
+    }
+
+    override fun onLike(cocktail: CocktailModel,position: Int) {
+        cocktail.isLiked = cocktail.isLiked == false
+        with (sharedPref?.edit())
+        {
+            this?.putBoolean("Liked",cocktail.isLiked)
+            this?.apply()
+        }
+        adapter.notifyItemChanged(position,1)
     }
 }
 

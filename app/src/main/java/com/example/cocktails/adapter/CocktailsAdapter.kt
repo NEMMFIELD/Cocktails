@@ -1,5 +1,6 @@
 package com.example.cocktails.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,23 +12,33 @@ import coil.transform.RoundedCornersTransformation
 import com.example.cocktails.R
 import com.example.cocktails.databinding.ItemViewBinding
 import com.example.cocktails.model.CocktailModel
+import javax.inject.Inject
 
-class CocktailsAdapter(private val listener: clickListener) :
+class CocktailsAdapter @Inject constructor(
+    private val listener: clickListener,
+    private val onLikeListener: likeListener
+) :
     ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
-        fun bind(item: CocktailModel, listener: clickListener) = with(binding)
-        {
-            imageCocktail.load(item.imgPath)
+        private val prefs = view.context.getSharedPreferences("Prefs",Context.MODE_PRIVATE)
+        fun bind(item: CocktailModel, listener: clickListener, onLikeListener: likeListener) =
+            with(binding)
             {
-                crossfade(true)
-                transformations(RoundedCornersTransformation())
-            }
-            textCocktail.text = item.name
-            itemView.setOnClickListener { listener.onItemClick(item, absoluteAdapterPosition) }
-        }
+                imageCocktail.load(item.imgPath)
+                {
+                    crossfade(true)
+                    transformations(RoundedCornersTransformation())
+                }
+                textCocktail.text = item.name
+              //  item.isLiked = prefs.getBoolean("Liked",false)
+                if (item.isLiked) likeImage.setImageResource(R.drawable.liked)
+                else likeImage.setImageResource(R.drawable.unliked)
 
+                itemView.setOnClickListener { listener.onItemClick(item, absoluteAdapterPosition) }
+                likeImage.setOnClickListener { onLikeListener.onLike(item,absoluteAdapterPosition) }
+            }
     }
 
     class CocktailsDiffUtil : DiffUtil.ItemCallback<CocktailModel>() {
@@ -46,10 +57,14 @@ class CocktailsAdapter(private val listener: clickListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), listener)
+        holder.bind(getItem(position), listener, onLikeListener)
     }
 
     interface clickListener {
         fun onItemClick(cocktail: CocktailModel, position: Int)
+    }
+
+    interface likeListener {
+        fun onLike(cocktail: CocktailModel, position: Int)
     }
 }

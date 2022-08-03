@@ -1,5 +1,7 @@
 package com.example.cocktails.network
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.model.DrinksItem
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,7 @@ class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi)
             id = response?.idDrink,
             name = response?.strDrink,
             imgPath = response?.strDrinkThumb.toString(),
-            recipe = response?.strInstructions.toString()
+            recipe = response?.strInstructions.toString(),
+            isLiked = false
         )
 }
