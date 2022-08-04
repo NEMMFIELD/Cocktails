@@ -10,14 +10,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.network.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
+class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl, private val sharedPreferences: SharedPreferences) : ViewModel() {
     private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
@@ -40,6 +38,11 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 Log.d("Error", e.toString())
             }
         }
+    }
+
+    fun setLikeByViewModel(liked:Boolean)
+    {
+        repository.setLike(liked)
     }
 
     fun loadSelectedCocktail(id: String?) {

@@ -48,6 +48,7 @@ class CocktailsAdapter @Inject constructor(
         override fun areContentsTheSame(oldItem: CocktailModel, newItem: CocktailModel): Boolean {
             return oldItem == newItem
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

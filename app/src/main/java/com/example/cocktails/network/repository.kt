@@ -12,21 +12,15 @@ import javax.inject.Inject
 interface repository {
     suspend fun loadCocktails(param: String): List<CocktailModel>
     suspend fun loadCocktailDetails(id: String?): CocktailModel
+    fun setLike(liked:Boolean)
 }
 
-class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi, @ApplicationContext context: Context) : repository {
-    private val sharedPreferences = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE)
+class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi, val sharedPreferences: SharedPreferences) : repository {
     override suspend fun loadCocktails(param: String): List<CocktailModel> {
         val list = cocktailsApi.getCocktailsByFirstLetter(param).drinks
         val myList = ArrayList<CocktailModel>()
         for (i in list?.indices!!) {
-            myList.add(
-                convertResponseToModel(
-                    cocktailsApi.getCocktailsByFirstLetter(param).drinks?.get(
-                        i
-                    )
-                )
-            )
+            myList.add(convertResponseToModel(cocktailsApi.getCocktailsByFirstLetter(param).drinks?.get(i)))
         }
         return myList
     }
@@ -37,12 +31,17 @@ class RepositoryImpl @Inject constructor(private val cocktailsApi: CocktailsApi,
             convertResponseToModel(cocktailsApi.getCocktailById(id).drinks?.first())
         }
 
+    override fun setLike(liked: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("Liked",liked).apply()
+    }
+
     private fun convertResponseToModel(response: DrinksItem?): CocktailModel =
         CocktailModel(
             id = response?.idDrink,
             name = response?.strDrink,
             imgPath = response?.strDrinkThumb.toString(),
             recipe = response?.strInstructions.toString(),
-            isLiked = sharedPreferences.getBoolean("Liked",false)
+            false
         )
 }

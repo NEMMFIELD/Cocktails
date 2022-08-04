@@ -162,12 +162,9 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener, CocktailsA
 
     override fun onLike(cocktail: CocktailModel,position: Int) {
         cocktail.isLiked = cocktail.isLiked == false
-        with (sharedPref?.edit())
-        {
-            this?.putBoolean("Liked",cocktail.isLiked)
-            this?.apply()
-        }
-        adapter.notifyItemChanged(position,1)
+        viewModel.setLikeByViewModel(cocktail.isLiked)
+        adapter.notifyItemChanged(position,"Name")
+        println("Cocktail ${cocktail.name} is liked? ${cocktail.isLiked}")
     }
 }
 
