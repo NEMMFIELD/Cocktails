@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl, private val sharedPreferences: SharedPreferences) : ViewModel() {
+class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
     private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
