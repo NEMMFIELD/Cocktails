@@ -1,7 +1,5 @@
 package com.example.cocktails.viewmodel
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,9 +38,8 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         }
     }
 
-    fun setLikeByViewModel(liked:Boolean)
-    {
-        repository.setLike(liked)
+    fun setLikeByViewModel(cocktailModel: CocktailModel) {
+        repository.setLike(cocktailModel)
     }
 
     fun loadSelectedCocktail(id: String?) {
@@ -53,6 +50,5 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 Log.d("Error", e.toString())
             }
         }
-
     }
 }

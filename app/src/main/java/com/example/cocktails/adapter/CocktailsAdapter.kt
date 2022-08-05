@@ -1,7 +1,5 @@
 package com.example.cocktails.adapter
 
-import android.content.Context
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +34,12 @@ class CocktailsAdapter @Inject constructor(
                 else likeImage.setImageResource(R.drawable.unliked)
 
                 itemView.setOnClickListener { listener.onItemClick(item, absoluteAdapterPosition) }
-                likeImage.setOnClickListener { onLikeListener.onLike(item,absoluteAdapterPosition) }
+                likeImage.setOnClickListener {
+                    onLikeListener.onLike(
+                        item,
+                        absoluteAdapterPosition
+                    )
+                }
             }
     }
 

@@ -1,12 +1,10 @@
 package com.example.cocktails.ui
 
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuProvider
@@ -27,20 +25,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 
 const val KEY = "key"
 const val ID = "id"
 const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
-class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener, CocktailsAdapter.likeListener {
+class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
+    CocktailsAdapter.likeListener {
     private var _binding: FragmentCocktailsBinding? = null
     private val binding get() = _binding
     private lateinit var adapter: CocktailsAdapter
     private val viewModel: CocktailsViewModel by viewModels()
     private val list: MutableList<CocktailModel> = ArrayList()
-    private val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
     private var searchingText: String = ""
     private var queryTextChangedJob: Job? = null
     override fun onCreateView(
@@ -160,11 +157,10 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener, CocktailsA
         adapter.notifyItemChanged(position)
     }
 
-    override fun onLike(cocktail: CocktailModel,position: Int) {
+    override fun onLike(cocktail: CocktailModel, position: Int) {
         cocktail.isLiked = cocktail.isLiked == false
-        viewModel.setLikeByViewModel(cocktail.isLiked)
-        adapter.notifyItemChanged(position,"Name")
-        println("Cocktail ${cocktail.name} is liked? ${cocktail.isLiked}")
+        viewModel.setLikeByViewModel(cocktail)
+        adapter.notifyItemChanged(position, "Name")
     }
 }
 
