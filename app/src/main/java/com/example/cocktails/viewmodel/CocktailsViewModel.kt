@@ -1,8 +1,9 @@
 package com.example.cocktails.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
@@ -40,9 +42,8 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         }
     }
 
-    fun setLikeByViewModel(liked:Boolean)
-    {
-        repository.setLike(liked)
+    fun setLikeByViewModel(cocktailModel: CocktailModel) {
+        repository.setLike(cocktailModel)
     }
 
     fun loadSelectedCocktail(id: String?) {
@@ -53,6 +54,16 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 Log.d("Error", e.toString())
             }
         }
+    }
 
+    fun shareCocktail(context: Context, cocktail: CocktailModel) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, cocktail.name + "\n" + cocktail.imgPath)
+            type = "text/*"
+        }
+        println("Path is ${cocktail.imgPath}")
+        val shareIntent = Intent.createChooser(sendIntent, "Look at this")
+        context.startActivity(shareIntent)
     }
 }
