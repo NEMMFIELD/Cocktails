@@ -62,7 +62,6 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
             putExtra(Intent.EXTRA_TEXT, cocktail.name + "\n" + cocktail.imgPath)
             type = "text/*"
         }
-        println("Path is ${cocktail.imgPath}")
         val shareIntent = Intent.createChooser(sendIntent, "Look at this")
         context.startActivity(shareIntent)
     }
