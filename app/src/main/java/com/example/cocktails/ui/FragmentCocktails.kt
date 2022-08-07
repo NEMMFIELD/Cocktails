@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktails.R
 import com.example.cocktails.adapter.CocktailsAdapter
@@ -119,10 +120,10 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
         this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@FragmentCocktails, this@FragmentCocktails)
         this?.recycler?.adapter = adapter
-        viewModel.cocktails.observe(viewLifecycleOwner, Observer {
+        viewModel.cocktails.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             list.addAll(viewModel.cocktails.value!!)
-        })
+        }
     }
 
     private fun filter(text: String) {
@@ -151,7 +152,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
         args.putString(ID, cocktail.id)
         args.putInt(KEY, position)
         findNavController().navigate(
-            com.example.cocktails.R.id.action_fragmentCocktails_to_cocktailDetails,
+            R.id.action_fragmentCocktails_to_cocktailDetails,
             args
         )
         adapter.notifyItemChanged(position)

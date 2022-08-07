@@ -3,6 +3,7 @@ package com.example.cocktails.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -61,6 +62,7 @@ class CocktailsAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position), listener, onLikeListener)
+        holder.itemView.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context,R.anim.item_animation_fall_down))
     }
 
     interface clickListener {

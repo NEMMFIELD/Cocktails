@@ -60,7 +60,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, cocktail.name + "\n" + cocktail.imgPath)
-            type = "text/*"
+            type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, "Look at this")
         context.startActivity(shareIntent)
