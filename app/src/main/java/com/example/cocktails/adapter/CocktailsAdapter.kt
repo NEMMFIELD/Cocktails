@@ -17,9 +17,7 @@ import javax.inject.Inject
 class CocktailsAdapter @Inject constructor(
     private val listener: clickListener,
     private val onLikeListener: likeListener
-) :
-    ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
-
+) : ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
         fun bind(item: CocktailModel, listener: clickListener, onLikeListener: likeListener) =
@@ -44,6 +42,21 @@ class CocktailsAdapter @Inject constructor(
             }
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position), listener, onLikeListener)
+        holder.itemView.startAnimation(
+            AnimationUtils.loadAnimation(
+                holder.itemView.context,
+                R.anim.item_animation_fall_down
+            )
+        )
+    }
+
     class CocktailsDiffUtil : DiffUtil.ItemCallback<CocktailModel>() {
         override fun areItemsTheSame(oldItem: CocktailModel, newItem: CocktailModel): Boolean {
             return oldItem.id == newItem.id
@@ -53,16 +66,6 @@ class CocktailsAdapter @Inject constructor(
             return oldItem == newItem
         }
 
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), listener, onLikeListener)
-        holder.itemView.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context,R.anim.item_animation_fall_down))
     }
 
     interface clickListener {

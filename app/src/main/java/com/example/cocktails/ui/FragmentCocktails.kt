@@ -2,6 +2,7 @@ package com.example.cocktails.ui
 
 
 import android.content.res.Configuration
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -62,18 +63,23 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
     override fun onStart() {
         super.onStart()
         viewModel.loadCocktails()
+        binding?.progressBar?.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerView()
         binding?.recycler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 when {
                     (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_DRAGGING) -> {
+                        binding?.progressBar?.visibility = View.VISIBLE
                         viewModel.loadCocktails()
+                        lifecycleScope.launch {
+                            delay(2900)
+                            binding?.progressBar?.visibility = View.GONE
+                        }
                     }
                 }
             }
