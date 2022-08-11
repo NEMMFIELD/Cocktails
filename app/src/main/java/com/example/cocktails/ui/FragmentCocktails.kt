@@ -9,6 +9,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import com.example.cocktails.R
 import com.example.cocktails.adapter.CocktailsAdapter
 import com.example.cocktails.databinding.FragmentCocktailsBinding
 import com.example.cocktails.model.CocktailModel
+import com.example.cocktails.network.ApiState
 import com.example.cocktails.viewmodel.CocktailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -126,9 +128,24 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
         this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@FragmentCocktails, this@FragmentCocktails)
         this?.recycler?.adapter = adapter
-        viewModel.cocktails.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-            list.addAll(viewModel.cocktails.value!!)
+        viewModel.postStateFlow.observe(viewLifecycleOwner)
+        {
+            when (it){
+                is ApiState.Success->{
+                    binding?.recycler?.isVisible = true
+                    adapter.submitList(it.data)
+                    println("Data is ${it.data}")
+                    list.addAll(it.data)
+                }
+                is ApiState.Failure->{
+                    binding?.recycler?.isVisible = false
+                    Log.d("TagError","On Create ${it.message}")
+                }
+                is ApiState.Loading->{
+                    binding?.recycler?.isVisible = false
+                }
+                else -> {}
+            }
         }
     }
 

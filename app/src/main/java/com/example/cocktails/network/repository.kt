@@ -4,6 +4,10 @@ import android.content.SharedPreferences
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.model.DrinksItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,20 +22,21 @@ class RepositoryImpl @Inject constructor(
     private val cocktailsApi: CocktailsApi,
     val sharedPreferences: SharedPreferences
 ) : repository {
-    override suspend fun loadCocktails(param: String): List<CocktailModel> {
-        val list = cocktailsApi.getCocktailsByFirstLetter(param).drinks
-        val myList = ArrayList<CocktailModel>()
-        for (i in list?.indices!!) {
-            myList.add(
-                convertResponseToModel(
-                    cocktailsApi.getCocktailsByFirstLetter(param).drinks?.get(
-                        i
-                    )
-                )
-            )
-        }
-        return myList
-    }
+
+     override suspend fun loadCocktails(param: String): List<CocktailModel> {
+         val list = cocktailsApi.getCocktailsByFirstLetter(param).drinks
+         val myList = ArrayList<CocktailModel>()
+         for (i in list?.indices!!) {
+             myList.add(
+                 convertResponseToModel(
+                     cocktailsApi.getCocktailsByFirstLetter(param).drinks?.get(
+                         i
+                     )
+                 )
+             )
+         }
+         return myList
+     }
 
     override suspend fun loadCocktailDetails(id: String?): CocktailModel =
         withContext(Dispatchers.IO)

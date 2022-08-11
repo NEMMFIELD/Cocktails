@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.cocktails.model.CocktailModel
+import com.example.cocktails.network.ApiState
 import com.example.cocktails.network.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
@@ -21,6 +21,9 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
     private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
     val cocktails: LiveData<List<CocktailModel>>
         get() = _mutableCocktails
+    private val _postStateFlow = MutableLiveData<ApiState>()
+    val postStateFlow: LiveData<ApiState>
+        get() = _postStateFlow
     private var numbChar: Char = 'a'
     private val _mutableCocktail = MutableLiveData<CocktailModel>()
     val cocktail: LiveData<CocktailModel>
@@ -32,12 +35,13 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                 val newCocktails = repository.loadCocktails(numbChar.toString())
                 val updatedCocktailsList = _mutableCocktails.value?.plus(newCocktails).orEmpty()
                 _mutableCocktails.value = updatedCocktailsList
+                _postStateFlow.value = ApiState.Success(_mutableCocktails.value!!.toList())
                 if (numbChar in 'a'..'z') {
                     numbChar++
                     delay(500)
                 } else return@launch
             } catch (e: Exception) {
-                Log.d("Error", e.toString())
+                _postStateFlow.value = ApiState.Failure(e)
             }
         }
     }

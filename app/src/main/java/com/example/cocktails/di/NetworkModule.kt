@@ -29,7 +29,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(moshi: Moshi): CocktailsApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
         .build()
         .create(CocktailsApi::class.java)
 
