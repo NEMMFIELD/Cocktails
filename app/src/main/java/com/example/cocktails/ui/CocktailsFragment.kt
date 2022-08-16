@@ -64,7 +64,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
 
     override fun onStart() {
         super.onStart()
-        viewModel.loadCocktails()
         binding?.progressBar?.visibility = View.GONE
     }
 
@@ -97,21 +96,20 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                     override fun onQueryTextSubmit(query: String): Boolean {
                         return false
                     }
-
                     override fun onQueryTextChange(newText: String): Boolean {
                         queryTextChangedJob?.cancel()
                         queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
                         {
                             delay(500)
                             searchingText = newText
-                            filter(searchingText)
+                           viewModel.searchInList(searchingText,list)
                         }
                         return false
                     }
                 })
                 searchView.requestFocus()
                 searchView.setQuery(searchingText, false)
-                filter(searchingText)
+                viewModel.searchInList(searchingText,list)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -134,7 +132,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                 is ApiState.Success->{
                     binding?.recycler?.isVisible = true
                     adapter.submitList(it.data)
-                    println("Data is ${it.data}")
                     list.addAll(it.data)
                 }
                 is ApiState.Failure->{
@@ -146,22 +143,6 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                 }
                 else -> {}
             }
-        }
-    }
-
-    private fun filter(text: String) {
-        val filteredlist: ArrayList<CocktailModel> = ArrayList()
-        for (item in list) {
-            if (item.name!!.lowercase().contains(text.lowercase())) {
-                filteredlist.add(item)
-            }
-        }
-        if (filteredlist.isEmpty()) {
-            Log.d("NoData", "No Data Found")
-        } else {
-            val set = filteredlist.toSet()
-            val newList = set.toList()
-            adapter.submitList(newList)
         }
     }
 
@@ -178,7 +159,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
             R.id.action_fragmentCocktails_to_cocktailDetails,
             args
         )
-        adapter.notifyItemChanged(position)
+        //adapter.notifyItemChanged(position)
     }
 
     override fun onLike(cocktail: CocktailModel, position: Int) {

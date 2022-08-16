@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/cocktailDetails"
-        android:name="com.example.cocktails.ui.CocktailDetails"
+        android:name="com.example.cocktails.ui.CocktailDetailsFragment"
         android:label="fragment_cocktail_details"
         tools:layout="@layout/fragment_cocktail_details" />
 </navigation>

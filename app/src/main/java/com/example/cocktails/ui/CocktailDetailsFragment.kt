@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class CocktailDetails : Fragment() {
+class CocktailDetailsFragment : Fragment() {
     private var id: String? = null
     private var count: Int? = null
     private var _binding: FragmentCocktailDetailsBinding? = null
@@ -47,7 +47,7 @@ class CocktailDetails : Fragment() {
             activity?.onBackPressed()
         }
         viewModel.loadSelectedCocktail(id)
-        viewModel.cocktail.observe(viewLifecycleOwner, Observer {
+        viewModel.cocktailDetails.observe(viewLifecycleOwner, Observer {
             binding?.nameCocktailDetails?.text = it.name
             binding?.imageCocktailDetails?.load(it.imgPath)
             binding?.instructionCocktailDetails?.text = it.recipe

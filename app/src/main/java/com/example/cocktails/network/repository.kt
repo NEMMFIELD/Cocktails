@@ -24,18 +24,9 @@ class RepositoryImpl @Inject constructor(
 ) : repository {
 
      override suspend fun loadCocktails(param: String): List<CocktailModel> {
-         val list = cocktailsApi.getCocktailsByFirstLetter(param).drinks
-         val myList = ArrayList<CocktailModel>()
-         for (i in list?.indices!!) {
-             myList.add(
-                 convertResponseToModel(
-                     cocktailsApi.getCocktailsByFirstLetter(param).drinks?.get(
-                         i
-                     )
-                 )
-             )
-         }
-         return myList
+         val requestApiList = cocktailsApi.getCocktailsByFirstLetter(param).drinks
+         val myList = requestApiList?.map { convertResponseToModel(it) }
+         return myList?:emptyList()
      }
 
     override suspend fun loadCocktailDetails(id: String?): CocktailModel =

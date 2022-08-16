@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Response(
     @Json(name = "drinks")
-    val drinks: List<DrinksItem?>? = emptyList()
+    val drinks: List<DrinksItem?>? = listOf()
 ) : Parcelable
 
 @Parcelize
