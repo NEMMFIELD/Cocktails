@@ -2,8 +2,8 @@ package com.example.cocktails.ui
 
 
 import android.content.res.Configuration
-import android.opengl.Visibility
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
@@ -12,11 +12,9 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktails.R
 import com.example.cocktails.adapter.CocktailsAdapter
@@ -41,9 +39,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
     private val binding get() = _binding
     private lateinit var adapter: CocktailsAdapter
     private val viewModel: CocktailsViewModel by viewModels()
-    private val list: MutableList<CocktailModel> = ArrayList()
     private var searchingText: String = ""
-    private var queryTextChangedJob: Job? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,7 +74,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                         binding?.progressBar?.visibility = View.VISIBLE
                         viewModel.loadCocktails()
                         lifecycleScope.launch {
-                            delay(2900)
+                            delay(2700)
                             binding?.progressBar?.visibility = View.GONE
                         }
                     }
@@ -96,20 +92,20 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                     override fun onQueryTextSubmit(query: String): Boolean {
                         return false
                     }
+
                     override fun onQueryTextChange(newText: String): Boolean {
-                        queryTextChangedJob?.cancel()
-                        queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
+                        viewModel.queryTextChangedJob?.cancel()
+                        viewModel.queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
                         {
-                            delay(500)
                             searchingText = newText
-                           viewModel.searchInList(searchingText,list)
+                            viewModel.searchInList(searchingText, viewModel.cocktails)
                         }
                         return false
                     }
                 })
                 searchView.requestFocus()
                 searchView.setQuery(searchingText, false)
-                viewModel.searchInList(searchingText,list)
+                viewModel.searchInList(searchingText, viewModel.cocktails)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -128,17 +124,16 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
         this?.recycler?.adapter = adapter
         viewModel.postStateFlow.observe(viewLifecycleOwner)
         {
-            when (it){
-                is ApiState.Success->{
+            when (it) {
+                is ApiState.Success -> {
                     binding?.recycler?.isVisible = true
                     adapter.submitList(it.data)
-                    list.addAll(it.data)
                 }
-                is ApiState.Failure->{
+                is ApiState.Failure -> {
                     binding?.recycler?.isVisible = false
-                    Log.d("TagError","On Create ${it.message}")
+                    Log.d("TagError", "On Create ${it.message}")
                 }
-                is ApiState.Loading->{
+                is ApiState.Loading -> {
                     binding?.recycler?.isVisible = false
                 }
                 else -> {}
@@ -159,7 +154,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
             R.id.action_fragmentCocktails_to_cocktailDetails,
             args
         )
-        //adapter.notifyItemChanged(position)
+        adapter.notifyItemChanged(position)
     }
 
     override fun onLike(cocktail: CocktailModel, position: Int) {

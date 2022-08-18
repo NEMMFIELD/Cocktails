@@ -11,18 +11,20 @@ import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.network.ApiState
 import com.example.cocktails.network.RepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
-   // private val _mutableCocktails = MutableLiveData<List<CocktailModel>>(emptyList())
-   // val cocktails: LiveData<List<CocktailModel>>
-   //    get() = _mutableCocktails
-    private val _postStateFlow = MutableLiveData<ApiState>()
-    val postStateFlow: LiveData<ApiState>
+    var queryTextChangedJob: Job? = null
+    val cocktails: MutableList<CocktailModel> = mutableListOf()
+    private val _postStateFlow = MutableStateFlow<ApiState>(ApiState.Empty)
+    val postStateFlow: StateFlow<ApiState>
         get() = _postStateFlow
     private var numbChar: Char = 'a'
     private val _mutableCocktailDetails = MutableLiveData<CocktailModel>()
@@ -38,14 +40,15 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
     fun loadCocktails() {
         viewModelScope.launch {
             try {
-                val newCocktails = repository.loadCocktails(numbChar.toString())
-                var mockList:List<CocktailModel> = listOf()
-                val updatedCocktailsList = mockList.plus(newCocktails)
-                _postStateFlow.value = ApiState.Success(updatedCocktailsList)
-                if (numbChar in 'a'..'z') {
-                    numbChar++
-                    delay(500)
-                } else return@launch
+                repository.loadCocktails(numbChar.toString())
+                    .collect {
+                        cocktails += it
+                        _postStateFlow.value = ApiState.Success(cocktails)
+                        if (numbChar in 'a'..'z') {
+                            numbChar++
+                            delay(500)
+                        } else return@collect
+                }
             } catch (e: Exception) {
                 _postStateFlow.value = ApiState.Failure(e)
             }

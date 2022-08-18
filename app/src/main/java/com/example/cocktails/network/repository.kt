@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface repository {
-    suspend fun loadCocktails(param: String): List<CocktailModel>
+    suspend fun loadCocktails(param: String): Flow<List<CocktailModel>>
     suspend fun loadCocktailDetails(id: String?): CocktailModel
     fun setLike(cocktailModel: CocktailModel)
     fun getLiked(id: String?): Boolean
@@ -23,11 +23,11 @@ class RepositoryImpl @Inject constructor(
     val sharedPreferences: SharedPreferences
 ) : repository {
 
-     override suspend fun loadCocktails(param: String): List<CocktailModel> {
+     override suspend fun loadCocktails(param: String): Flow<List<CocktailModel>> = flow {
          val requestApiList = cocktailsApi.getCocktailsByFirstLetter(param).drinks
-         val myList = requestApiList?.map { convertResponseToModel(it) }
-         return myList?:emptyList()
-     }
+         val myList: List<CocktailModel>? = requestApiList?.map { convertResponseToModel(it) }
+         emit(myList ?: emptyList())
+     }.flowOn(Dispatchers.IO)
 
     override suspend fun loadCocktailDetails(id: String?): CocktailModel =
         withContext(Dispatchers.IO)
