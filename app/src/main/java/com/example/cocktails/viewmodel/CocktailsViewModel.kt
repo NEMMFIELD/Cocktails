@@ -48,7 +48,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                             numbChar++
                             delay(500)
                         } else return@collect
-                }
+                    }
             } catch (e: Exception) {
                 _postStateFlow.value = ApiState.Failure(e)
             }
