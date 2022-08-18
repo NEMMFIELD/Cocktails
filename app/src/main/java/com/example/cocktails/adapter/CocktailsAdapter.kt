@@ -49,12 +49,12 @@ class CocktailsAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position), listener, onLikeListener)
-       /* holder.itemView.startAnimation(
-            AnimationUtils.loadAnimation(
-                holder.itemView.context,
-                R.anim.item_animation_fall_down
-            )
-        )*/
+        /* holder.itemView.startAnimation(
+             AnimationUtils.loadAnimation(
+                 holder.itemView.context,
+                 R.anim.item_animation_fall_down
+             )
+         )*/
     }
 
     class CocktailsDiffUtil : DiffUtil.ItemCallback<CocktailModel>() {

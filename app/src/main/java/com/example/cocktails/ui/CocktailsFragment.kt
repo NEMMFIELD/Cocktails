@@ -12,7 +12,9 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -122,23 +124,28 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
         this?.recycler?.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@FragmentCocktails, this@FragmentCocktails)
         this?.recycler?.adapter = adapter
-        viewModel.postStateFlow.observe(viewLifecycleOwner)
-        {
-            when (it) {
-                is ApiState.Success -> {
-                    binding?.recycler?.isVisible = true
-                    adapter.submitList(it.data)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED)
+            {
+                viewModel.postStateFlow.collect { state ->
+                    when (state) {
+                        is ApiState.Success -> {
+                            binding?.recycler?.isVisible = true
+                            adapter.submitList(state.data)
+                        }
+                        is ApiState.Failure -> {
+                            binding?.recycler?.isVisible = false
+                            Log.d("TagError", "On Create ${state.message}")
+                        }
+                        is ApiState.Loading -> {
+                            binding?.recycler?.isVisible = false
+                        }
+                        else -> {}
+                    }
                 }
-                is ApiState.Failure -> {
-                    binding?.recycler?.isVisible = false
-                    Log.d("TagError", "On Create ${it.message}")
-                }
-                is ApiState.Loading -> {
-                    binding?.recycler?.isVisible = false
-                }
-                else -> {}
             }
         }
+
     }
 
     override fun onDestroyView() {
