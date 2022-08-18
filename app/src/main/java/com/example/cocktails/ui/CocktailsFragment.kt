@@ -99,6 +99,7 @@ class FragmentCocktails : Fragment(), CocktailsAdapter.clickListener,
                         viewModel.queryTextChangedJob?.cancel()
                         viewModel.queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
                         {
+                            delay(500)
                             searchingText = newText
                             viewModel.searchInList(searchingText, viewModel.cocktails)
                         }
