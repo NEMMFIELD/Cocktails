@@ -10,5 +10,5 @@ data class CocktailModel(
     val name: String?,
     val imgPath: String?,
     val recipe: String?,
-    var isLiked:Boolean
+    var isLiked: Boolean
 ) : Parcelable

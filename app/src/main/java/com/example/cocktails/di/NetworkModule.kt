@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/"
+    private const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/"
 
     @Provides
     @Singleton
@@ -37,6 +37,6 @@ object NetworkModule {
     @Singleton
     fun provideRepository(
         cocktailsApi: CocktailsApi, sharedPreferences: SharedPreferences
-    ): repository = RepositoryImpl(cocktailsApi,sharedPreferences)
+    ): repository = RepositoryImpl(cocktailsApi, sharedPreferences)
 
 }

@@ -23,13 +23,11 @@ import javax.inject.Inject
 class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
     var queryTextChangedJob: Job? = null
     val cocktails: MutableList<CocktailModel> = mutableListOf()
-    private val _postStateFlow = MutableStateFlow<ApiState>(ApiState.Empty)
-    val postStateFlow: StateFlow<ApiState>
+    private val _postStateFlow: MutableStateFlow<ApiState<List<CocktailModel>>> =
+        MutableStateFlow(ApiState.Empty)
+    val postStateFlow: StateFlow<ApiState<List<CocktailModel>>>
         get() = _postStateFlow
     private var numbChar: Char = 'a'
-    private val _mutableCocktailDetails = MutableLiveData<CocktailModel>()
-    val cocktailDetails: LiveData<CocktailModel>
-        get() = _mutableCocktailDetails
 
     init {
         viewModelScope.launch {
@@ -66,32 +64,12 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
             Log.d("NoData", "No Data Found")
         } else {
             val set = filteredlist.toSet()
-            val newList = set.toList()
+            val newList = set.toMutableList()
             _postStateFlow.value = ApiState.Success(newList)
         }
     }
 
     fun setLikeByViewModel(cocktailModel: CocktailModel) {
         repository.setLike(cocktailModel)
-    }
-
-    fun loadSelectedCocktail(id: String?) {
-        viewModelScope.launch {
-            try {
-                _mutableCocktailDetails.value = repository.loadCocktailDetails(id)
-            } catch (e: Exception) {
-                Log.d("Error", e.toString())
-            }
-        }
-    }
-
-    fun shareCocktail(context: Context, cocktail: CocktailModel) {
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, cocktail.name + "\n" + cocktail.imgPath)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, "Look at this")
-        context.startActivity(shareIntent)
     }
 }

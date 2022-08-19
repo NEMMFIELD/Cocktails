@@ -3,7 +3,6 @@ package com.example.cocktails.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +31,7 @@ class CocktailsAdapter @Inject constructor(
                 if (item.isLiked) likeImage.setImageResource(R.drawable.liked)
                 else likeImage.setImageResource(R.drawable.unliked)
 
-                itemView.setOnClickListener { listener.onItemClick(item, absoluteAdapterPosition) }
+                itemView.setOnClickListener { listener.onItemClick(item) }
                 likeImage.setOnClickListener {
                     onLikeListener.onLike(
                         item,
@@ -69,7 +68,7 @@ class CocktailsAdapter @Inject constructor(
     }
 
     interface clickListener {
-        fun onItemClick(cocktail: CocktailModel, position: Int)
+        fun onItemClick(cocktail: CocktailModel)
     }
 
     interface likeListener {

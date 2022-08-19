@@ -10,13 +10,13 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 const val SHARED_PREF_NAME = "MyPreference"
+
 @Module
 @InstallIn(SingletonComponent::class)
 class SharedPreferencesModule {
     @Singleton
     @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences
-    {
-        return context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE)
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 }
