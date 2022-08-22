@@ -1,4 +1,4 @@
-package com.example.cocktails.adapter
+package com.example.cocktails.ui.cocktails
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class CocktailsAdapter @Inject constructor(
     private val listener: clickListener,
-    private val onLikeListener: likeListener
+    private val onLikeListener: likeListener,
 ) : ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
@@ -48,12 +48,6 @@ class CocktailsAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position), listener, onLikeListener)
-        /* holder.itemView.startAnimation(
-             AnimationUtils.loadAnimation(
-                 holder.itemView.context,
-                 R.anim.item_animation_fall_down
-             )
-         )*/
     }
 
     class CocktailsDiffUtil : DiffUtil.ItemCallback<CocktailModel>() {
@@ -64,7 +58,6 @@ class CocktailsAdapter @Inject constructor(
         override fun areContentsTheSame(oldItem: CocktailModel, newItem: CocktailModel): Boolean {
             return oldItem == newItem
         }
-
     }
 
     interface clickListener {

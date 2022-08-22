@@ -1,10 +1,6 @@
-package com.example.cocktails.viewmodel
+package com.example.cocktails.ui.cocktails
 
-import android.content.Context
-import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cocktails.model.CocktailModel
@@ -21,6 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CocktailsViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
+    companion object {
+        const val PAUSE_AFTER_SWITCHING_LETTER = 500L //пауза после перехода на следующий символ
+    }
+
     var queryTextChangedJob: Job? = null
     val cocktails: MutableList<CocktailModel> = mutableListOf()
     private val _postStateFlow: MutableStateFlow<ApiState<List<CocktailModel>>> =
@@ -44,7 +44,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
                         _postStateFlow.value = ApiState.Success(cocktails)
                         if (numbChar in 'a'..'z') {
                             numbChar++
-                            delay(500)
+                            delay(PAUSE_AFTER_SWITCHING_LETTER)
                         } else return@collect
                     }
             } catch (e: Exception) {

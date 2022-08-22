@@ -8,8 +8,8 @@ import retrofit2.http.Query
 interface CocktailsApi {
 
     @GET("1/search.php?")
-    suspend fun getCocktailsByFirstLetter(@Query("f") f: String): Response
+    suspend fun getCocktailsByFirstLetter(@Query("firstLetter") f: String): Response
 
     @GET("1/lookup.php?")
-    suspend fun getCocktailById(@Query("i") i: String?): Response
+    suspend fun getCocktailById(@Query("id") id: String?): Response
 }

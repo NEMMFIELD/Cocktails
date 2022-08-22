@@ -1,4 +1,4 @@
-package com.example.cocktails.ui
+package com.example.cocktails.ui.cocktails
 
 
 import android.content.res.Configuration
@@ -20,27 +20,28 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.cocktails.R
-import com.example.cocktails.adapter.CocktailsAdapter
 import com.example.cocktails.databinding.CocktailsFragmentBinding
 import com.example.cocktails.model.CocktailModel
 import com.example.cocktails.network.ApiState
-import com.example.cocktails.viewmodel.CocktailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-const val ID = "id"
-const val FAST_SEARCH_KEY = "fsk"
 
 @AndroidEntryPoint
 class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapter.clickListener,
     CocktailsAdapter.likeListener {
+    companion object {
+        const val FAST_SEARCH_KEY = "fsk"
+        const val TIME_FOR_PAGING = 2900L // Время осуществления пагинации
+    }
+
     private val viewBinding: CocktailsFragmentBinding by viewBinding(createMethod = CreateMethod.INFLATE)
     private lateinit var adapter: CocktailsAdapter
     private val viewModel: CocktailsViewModel by viewModels()
-
     private var searchingText: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +80,7 @@ class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapte
                             progressBar?.visibility = View.VISIBLE
                             viewModel.loadCocktails()
                             lifecycleScope.launch {
-                                delay(2900)
+                                delay(TIME_FOR_PAGING)
                                 progressBar?.visibility = View.GONE
                             }
                         }
@@ -94,6 +95,7 @@ class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapte
                 val searchItem: MenuItem = menu.findItem(R.id.action_search)
                 val searchView: SearchView = searchItem.actionView as SearchView
                 if (savedInstanceState == null) searchingText = ""
+
                 searchView.setOnQueryTextListener(object : OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String): Boolean {
                         return false
@@ -125,6 +127,7 @@ class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapte
         val spanCount = if (activity?.resources?.configuration?.orientation !=
             Configuration.ORIENTATION_PORTRAIT
         ) 3 else 2
+
         recycler.layoutManager = GridLayoutManager(context, spanCount)
         adapter = CocktailsAdapter(this@CocktailsFragment, this@CocktailsFragment)
         recycler.adapter = adapter

@@ -20,7 +20,7 @@ interface repository {
 
 class RepositoryImpl @Inject constructor(
     private val cocktailsApi: CocktailsApi,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
 ) : repository {
 
     override fun loadCocktails(param: String): Flow<List<CocktailModel>> = flow {

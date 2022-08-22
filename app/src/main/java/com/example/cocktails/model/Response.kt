@@ -22,5 +22,5 @@ data class DrinksItem constructor(
     val idDrink: String? = null,
 
     @Json(name = "strDrinkThumb")
-    val strDrinkThumb: String? = null
+    val strDrinkThumb: String? = null,
 ) : Parcelable

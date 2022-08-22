@@ -1,4 +1,4 @@
-package com.example.cocktails.ui
+package com.example.cocktails.ui.cocktaildetails
 
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +15,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import coil.load
 import com.example.cocktails.databinding.CocktailDetailsFragmentBinding
 import com.example.cocktails.network.ApiState
-import com.example.cocktails.viewmodel.SelectedCocktailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
