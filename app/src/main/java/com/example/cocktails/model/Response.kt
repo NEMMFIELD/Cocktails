@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Response(
     @Json(name = "drinks")
-    val drinks: List<DrinksItem?>? = null
+    val drinks: List<DrinksItem?>? = listOf()
 ) : Parcelable
 
 @Parcelize
@@ -22,5 +22,5 @@ data class DrinksItem constructor(
     val idDrink: String? = null,
 
     @Json(name = "strDrinkThumb")
-    val strDrinkThumb: String? = null
+    val strDrinkThumb: String? = null,
 ) : Parcelable

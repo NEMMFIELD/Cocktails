@@ -1,9 +1,8 @@
-package com.example.cocktails.adapter
+package com.example.cocktails.ui.cocktails
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,7 @@ import javax.inject.Inject
 
 class CocktailsAdapter @Inject constructor(
     private val listener: clickListener,
-    private val onLikeListener: likeListener
+    private val onLikeListener: likeListener,
 ) : ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
@@ -32,7 +31,7 @@ class CocktailsAdapter @Inject constructor(
                 if (item.isLiked) likeImage.setImageResource(R.drawable.liked)
                 else likeImage.setImageResource(R.drawable.unliked)
 
-                itemView.setOnClickListener { listener.onItemClick(item, absoluteAdapterPosition) }
+                itemView.setOnClickListener { listener.onItemClick(item) }
                 likeImage.setOnClickListener {
                     onLikeListener.onLike(
                         item,
@@ -49,12 +48,6 @@ class CocktailsAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position), listener, onLikeListener)
-        holder.itemView.startAnimation(
-            AnimationUtils.loadAnimation(
-                holder.itemView.context,
-                R.anim.item_animation_fall_down
-            )
-        )
     }
 
     class CocktailsDiffUtil : DiffUtil.ItemCallback<CocktailModel>() {
@@ -65,11 +58,10 @@ class CocktailsAdapter @Inject constructor(
         override fun areContentsTheSame(oldItem: CocktailModel, newItem: CocktailModel): Boolean {
             return oldItem == newItem
         }
-
     }
 
     interface clickListener {
-        fun onItemClick(cocktail: CocktailModel, position: Int)
+        fun onItemClick(cocktail: CocktailModel)
     }
 
     interface likeListener {

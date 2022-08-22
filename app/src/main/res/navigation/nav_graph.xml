@@ -3,24 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragmentCocktails">
+    app:startDestination="@id/cocktailsFragment">
 
     <fragment
-        android:id="@+id/fragmentCocktails"
-        android:name="com.example.cocktails.ui.FragmentCocktails"
+        android:id="@+id/cocktailsFragment"
+        android:name="com.example.cocktails.ui.cocktails.CocktailsFragment"
         android:label="fragment_cocktails"
-        tools:layout="@layout/fragment_cocktails" >
+        tools:layout="@layout/cocktails_fragment">
         <action
-            android:id="@+id/action_fragmentCocktails_to_cocktailDetails"
-            app:destination="@id/cocktailDetails"
+            android:id="@+id/action_cocktailsFragment_to_cocktailDetailsFragment"
+            app:destination="@id/cocktailDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right">
+            <argument
+                android:name="id"
+                android:defaultValue="0"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
-        android:id="@+id/cocktailDetails"
-        android:name="com.example.cocktails.ui.CocktailDetails"
-        android:label="fragment_cocktail_details"
-        tools:layout="@layout/fragment_cocktail_details" />
+        android:id="@+id/cocktailDetailsFragment"
+        android:name="com.example.cocktails.ui.cocktaildetails.CocktailDetailsFragment"
+        android:label="cocktail_details_fragment"
+        tools:layout="@layout/cocktail_details_fragment" >
+    </fragment>
 </navigation>

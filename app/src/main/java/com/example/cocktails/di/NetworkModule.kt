@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/"
+    private const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/"
 
     @Provides
     @Singleton
@@ -29,7 +29,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(moshi: Moshi): CocktailsApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
         .build()
         .create(CocktailsApi::class.java)
 
@@ -37,6 +37,6 @@ object NetworkModule {
     @Singleton
     fun provideRepository(
         cocktailsApi: CocktailsApi, sharedPreferences: SharedPreferences
-    ): repository = RepositoryImpl(cocktailsApi,sharedPreferences)
+    ): repository = RepositoryImpl(cocktailsApi, sharedPreferences)
 
 }

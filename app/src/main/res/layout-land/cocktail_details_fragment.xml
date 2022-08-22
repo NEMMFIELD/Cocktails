@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:background="#380106"
-    tools:context=".ui.CocktailDetails">
+    tools:context=".ui.cocktaildetails.CocktailDetailsFragment">
 
     <TextView
         android:id="@+id/btnBack"
