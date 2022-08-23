@@ -14,12 +14,12 @@ import com.example.cocktails.model.CocktailModel
 import javax.inject.Inject
 
 class CocktailsAdapter @Inject constructor(
-    private val listener: clickListener,
-    private val onLikeListener: likeListener,
+    private val listener: ClickListener,
+    private val onLikeListener: LikeListener,
 ) : ListAdapter<CocktailModel, CocktailsAdapter.ViewHolder>(CocktailsDiffUtil()) {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemViewBinding.bind(view)
-        fun bind(item: CocktailModel, listener: clickListener, onLikeListener: likeListener) =
+        fun bind(item: CocktailModel, listener: ClickListener, onLikeListener: LikeListener) =
             with(binding)
             {
                 imageCocktail.load(item.imgPath)
@@ -60,11 +60,11 @@ class CocktailsAdapter @Inject constructor(
         }
     }
 
-    interface clickListener {
+    interface ClickListener {
         fun onItemClick(cocktail: CocktailModel)
     }
 
-    interface likeListener {
+    interface LikeListener {
         fun onLike(cocktail: CocktailModel, position: Int)
     }
 }

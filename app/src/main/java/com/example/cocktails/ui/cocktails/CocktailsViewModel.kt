@@ -27,7 +27,7 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         MutableStateFlow(ApiState.Empty)
     val postStateFlow: StateFlow<ApiState<List<CocktailModel>>>
         get() = _postStateFlow
-    private var numbChar: Char = 'a'
+    private var firstChar: Char = 'a'
 
     init {
         viewModelScope.launch {
@@ -38,12 +38,12 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
     fun loadCocktails() {
         viewModelScope.launch {
             try {
-                repository.loadCocktails(numbChar.toString())
+                repository.loadCocktails(firstChar.toString())
                     .collect {
                         cocktails += it
                         _postStateFlow.value = ApiState.Success(cocktails)
-                        if (numbChar in 'a'..'z') {
-                            numbChar++
+                        if (firstChar in 'a'..'z') {
+                            firstChar++
                             delay(PAUSE_AFTER_SWITCHING_LETTER)
                         } else return@collect
                     }
@@ -53,19 +53,17 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         }
     }
 
-    fun searchInList(text: String, list: List<CocktailModel>) {
+    fun searchInList(text: String) {
         val filteredlist: ArrayList<CocktailModel> = ArrayList()
-        for (item in list) {
-            if (item.name?.lowercase()?.contains(text.lowercase()) == true) {
-                filteredlist.add(item)
-            }
+
+        filteredlist += cocktails.filter {
+            it.name?.lowercase()?.contains(text.lowercase()) == true
         }
+
         if (filteredlist.isEmpty()) {
             Log.d("NoData", "No Data Found")
         } else {
-            val set = filteredlist.toSet()
-            val newList = set.toMutableList()
-            _postStateFlow.value = ApiState.Success(newList)
+            _postStateFlow.value = ApiState.Success(filteredlist)
         }
     }
 
