@@ -30,8 +30,8 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapter.clickListener,
-    CocktailsAdapter.likeListener {
+class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapter.ClickListener,
+    CocktailsAdapter.LikeListener {
     companion object {
         const val FAST_SEARCH_KEY = "fsk"
         const val TIME_FOR_PAGING = 2900L // Время осуществления пагинации
@@ -106,14 +106,14 @@ class CocktailsFragment : Fragment(R.layout.cocktails_fragment), CocktailsAdapte
                         viewModel.queryTextChangedJob = lifecycleScope.launch(Dispatchers.Main)
                         {
                             searchingText = newText
-                            viewModel.searchInList(searchingText, viewModel.cocktails)
+                            viewModel.searchInList(searchingText)
                         }
                         return false
                     }
                 })
                 searchView.requestFocus()
                 searchView.setQuery(searchingText, false)
-                viewModel.searchInList(searchingText, viewModel.cocktails)
+                viewModel.searchInList(searchingText)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

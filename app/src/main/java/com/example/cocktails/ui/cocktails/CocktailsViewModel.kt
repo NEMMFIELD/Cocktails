@@ -53,19 +53,17 @@ class CocktailsViewModel @Inject constructor(private val repository: RepositoryI
         }
     }
 
-    fun searchInList(text: String, list: List<CocktailModel>) {
+    fun searchInList(text: String) {
         val filteredlist: ArrayList<CocktailModel> = ArrayList()
-        for (item in list) {
-            if (item.name?.lowercase()?.contains(text.lowercase()) == true) {
-                filteredlist.add(item)
-            }
+
+        filteredlist += cocktails.filter {
+            it.name?.lowercase()?.contains(text.lowercase()) == true
         }
+
         if (filteredlist.isEmpty()) {
             Log.d("NoData", "No Data Found")
         } else {
-            // val set = filteredlist.toSet()
-            // val newList = set.toMutableList()
-            _postStateFlow.value = ApiState.Success(filteredlist.distinct())
+            _postStateFlow.value = ApiState.Success(filteredlist)
         }
     }
 
